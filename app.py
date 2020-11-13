@@ -7,6 +7,8 @@ import requests
 from requests.auth import HTTPBasicAuth
 import base64
 import json
+from waitress import serve
+
 
 
 # initialize a flask app
@@ -21,26 +23,27 @@ def api_all():
 
     if 'id' in request.args:
         id = int(request.args['id'])
+        vvalue = id+0.3
     else:
         return "Error: No id field provided. Please specify an id."
 
 
 
-    return jsonify(id)
+    return jsonify(vvalue)
 
 
 
 
 
 
-
+@app.route('/api/v1/mpesa', methods=['POST'])
 def main():
 # Public key on the API listener used to encrypt keys
     public_key = 'MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEArv9yxA69XQKBo24BaF/D+fvlqmGdYjqLQ5WtNBb5tquqGvAvG3WMFETVUSow/LizQalxj2ElMVrUmzu5mGGkxK08bWEXF7a1DEvtVJs6nppIlFJc2SnrU14AOrIrB28ogm58JjAl5BOQawOXD5dfSk7MaAA82pVHoIqEu0FxA8BOKU+RGTihRU+ptw1j4bsAJYiPbSX6i71gfPvwHPYamM0bfI4CmlsUUR3KvCG24rB6FNPcRBhM3jDuv8ae2kC33w9hEq8qNB55uw51vK7hyXoAa+U7IqP1y6nBdlN25gkxEA8yrsl1678cspeXr+3ciRyqoRgj9RD/ONbJhhxFvt1cLBh+qwK2eqISfBb06eRnNeC71oBokDm3zyCnkOtMDGl7IvnMfZfEPFCfg5QgJVk1msPpRvQxmEsrX9MQRyFVzgy2CWNIb7c+jPapyrNwoUbANlN8adU1m6yOuoX7F49x+OjiG2se0EJ6nafeKUXw/+hiJZvELUYgzKUtMAZVTNZfT8jjb58j8GVtuS+6TM2AutbejaCV84ZK58E2CRJqhmjQibEUO6KPdD7oTlEkFy52Y1uOOBXgYpqMzufNPmfdqqqSM4dU70PO8ogyKGiLAIxCetMjjm6FCMEA3Kc8K0Ig7/XtFm9By6VxTJK1Mg36TlHaZKP6VzVLXMtesJECAwEAAQ=='
 # Create Context with API to request a Session ID
     api_context = APIContext()
 # Api key
-    api_context.api_key = '6bc4157dbee34d409118e0978dc6dd17'
+    api_context.api_key = '7OCA9qYWyAdaajBsrm46hgwANyqeUGfG'
 # Public key
     api_context.public_key = public_key
 # Use ssl/https
@@ -52,10 +55,10 @@ def main():
 # API Port
     api_context.port = 443
 # API Path
-    api_context.path = '/sandbox/ipg/v2/vodafoneGHA/getSession/'
+    api_context.path = '/sandbox/ipg/v2/vodacomTZN/getSession/'
 
 # Add/update headers
-    api_context.add_header('Origin', '*')
+    api_context.add_header('Origin', '192.168.43.95')
 
 # Parameters can be added to the call as well that on POST will be in JSON format and on GET will be URL parameters
 # api_context.add_parameter('key', 'value')
@@ -86,13 +89,13 @@ def main():
     api_context.method_type = APIMethodType.POST
     api_context.address = 'openapi.m-pesa.com'
     api_context.port = 443
-    api_context.path = '/sandbox/ipg/v2/vodafoneGHA/c2bPayment/singleStage/'
+    api_context.path = '/sandbox/ipg/v2/vodacomTZN/c2bPayment/singleStage/'
 
-    api_context.add_header('Origin', '*')
+    api_context.add_header('Origin', '192.168.43.95')
 
-    api_context.add_parameter('input_Amount', '10')
-    api_context.add_parameter('input_Country', 'GHA')
-    api_context.add_parameter('input_Currency', 'GHS')
+    api_context.add_parameter('input_Amount', '10000')
+    api_context.add_parameter('input_Country', 'TZN')
+    api_context.add_parameter('input_Currency', 'TZS')
     api_context.add_parameter('input_CustomerMSISDN', '000000000001')
     api_context.add_parameter('input_ServiceProviderCode', '000000')
     api_context.add_parameter('input_ThirdPartyConversationID', 'asv02e5958774f7ba228d83d0d689761')
@@ -116,7 +119,9 @@ def main():
     print(result.status_code)
     print(result.headers)
     print(result.body)    
-
-if __name__ == '__main__':
+    return jsonify(result)
+# if __name__ == '__main__':
     # main()
-    app.run(port=5000,debug=True)
+    # app.run(port=5000,debug=True)
+    # serve(app)
+    # serve(app, host='0.0.0.0', port=8080)
