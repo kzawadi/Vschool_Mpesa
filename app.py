@@ -18,7 +18,7 @@ app = Flask(__name__)
 api = Api(app)
 
 
-@app.route('/api/v1/resources/books/all', methods=['GET'])
+@app.route('/api/v1/test', methods=['GET'])
 def api_all():
 
     if 'id' in request.args:
@@ -36,7 +36,7 @@ def api_all():
 
 
 
-@app.route('/api/v1/mpesa', methods=['POST'])
+@app.route('/api/v1/vschool/subscription', methods=['POST'])
 def main():
 # Public key on the API listener used to encrypt keys
     public_key = 'MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEArv9yxA69XQKBo24BaF/D+fvlqmGdYjqLQ5WtNBb5tquqGvAvG3WMFETVUSow/LizQalxj2ElMVrUmzu5mGGkxK08bWEXF7a1DEvtVJs6nppIlFJc2SnrU14AOrIrB28ogm58JjAl5BOQawOXD5dfSk7MaAA82pVHoIqEu0FxA8BOKU+RGTihRU+ptw1j4bsAJYiPbSX6i71gfPvwHPYamM0bfI4CmlsUUR3KvCG24rB6FNPcRBhM3jDuv8ae2kC33w9hEq8qNB55uw51vK7hyXoAa+U7IqP1y6nBdlN25gkxEA8yrsl1678cspeXr+3ciRyqoRgj9RD/ONbJhhxFvt1cLBh+qwK2eqISfBb06eRnNeC71oBokDm3zyCnkOtMDGl7IvnMfZfEPFCfg5QgJVk1msPpRvQxmEsrX9MQRyFVzgy2CWNIb7c+jPapyrNwoUbANlN8adU1m6yOuoX7F49x+OjiG2se0EJ6nafeKUXw/+hiJZvELUYgzKUtMAZVTNZfT8jjb58j8GVtuS+6TM2AutbejaCV84ZK58E2CRJqhmjQibEUO6KPdD7oTlEkFy52Y1uOOBXgYpqMzufNPmfdqqqSM4dU70PO8ogyKGiLAIxCetMjjm6FCMEA3Kc8K0Ig7/XtFm9By6VxTJK1Mg36TlHaZKP6VzVLXMtesJECAwEAAQ=='
@@ -93,13 +93,13 @@ def main():
 
     api_context.add_header('Origin', '192.168.43.95')
 
-    api_context.add_parameter('input_Amount', '10000')
+    api_context.add_parameter('input_Amount', '1000')
     api_context.add_parameter('input_Country', 'TZN')
     api_context.add_parameter('input_Currency', 'TZS')
-    api_context.add_parameter('input_CustomerMSISDN', '000000000001')
+    api_context.add_parameter('input_CustomerMSISDN', '255756882578')
     api_context.add_parameter('input_ServiceProviderCode', '000000')
-    api_context.add_parameter('input_ThirdPartyConversationID', 'asv02e5958774f7ba228d83d0d689761')
-    api_context.add_parameter('input_TransactionReference', 'T1234C')
+    api_context.add_parameter('input_ThirdPartyConversationID', 'asv02e5958774f7ba228d83d0d689765')
+    api_context.add_parameter('input_TransactionReference', 'T1234P')
     api_context.add_parameter('input_PurchasedItemsDesc', 'Shoes')
 
     api_request = APIRequest(api_context)

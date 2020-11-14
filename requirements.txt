@@ -6,3 +6,4 @@ requests==2.18.4
 urllib3==1.22
 Flask==1.0.2
 Flask-RESTful==0.3.8
+waitress
