@@ -78,7 +78,7 @@ def main():
 
 # Display results
     print(result.status_code)
-    print(result.headers)
+    # print(result.headers)
     print(result.body)
 
 # The above call issued a sessionID which will be used as the API key in calls that needs the sessionID
@@ -93,19 +93,20 @@ def main():
 
     api_context.add_header('Origin', '192.168.43.95')
 
-    api_context.add_parameter('input_Amount', '1000')
+    api_context.add_parameter('input_Amount', '100')
     api_context.add_parameter('input_Country', 'TZN')
     api_context.add_parameter('input_Currency', 'TZS')
-    api_context.add_parameter('input_CustomerMSISDN', '255756882578')
+    api_context.add_parameter('input_CustomerMSISDN', '000000000001')
     api_context.add_parameter('input_ServiceProviderCode', '000000')
-    api_context.add_parameter('input_ThirdPartyConversationID', 'asv02e5958774f7ba228d83d0d689765')
-    api_context.add_parameter('input_TransactionReference', 'T1234P')
+    api_context.add_parameter('input_ThirdPartyConversationID', 'asv02e5958774f7ba228d83d0d689632')
+    api_context.add_parameter('input_TransactionReference', 'T1234T')
     api_context.add_parameter('input_PurchasedItemsDesc', 'Shoes')
 
     api_request = APIRequest(api_context)
 
 # SessionID can take up to 30 seconds to become 'live' in the system and will be invalid until it is
-    sleep(30)
+    # 5sec for testing
+    sleep(3) 
 
     result = None
     try:
@@ -117,9 +118,9 @@ def main():
         raise Exception('API call failed to get result. Please check.')
 
     print(result.status_code)
-    print(result.headers)
+    # print(result.headers)
     print(result.body)    
-    return jsonify(result)
+    return jsonify(result.body,result.status_code)
 # if __name__ == '__main__':
     # main()
     # app.run(port=5000,debug=True)
