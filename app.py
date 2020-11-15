@@ -58,7 +58,7 @@ def main():
     api_context.path = '/sandbox/ipg/v2/vodacomTZN/getSession/'
 
 # Add/update headers
-    api_context.add_header('Origin', '192.168.43.95')
+    api_context.add_header('Origin', '18.133.228.67')
 
 # Parameters can be added to the call as well that on POST will be in JSON format and on GET will be URL parameters
 # api_context.add_parameter('key', 'value')
@@ -91,14 +91,14 @@ def main():
     api_context.port = 443
     api_context.path = '/sandbox/ipg/v2/vodacomTZN/c2bPayment/singleStage/'
 
-    api_context.add_header('Origin', '192.168.43.95')
+    api_context.add_header('Origin','18.133.228.67' )
 
     api_context.add_parameter('input_Amount', '100')
     api_context.add_parameter('input_Country', 'TZN')
     api_context.add_parameter('input_Currency', 'TZS')
     api_context.add_parameter('input_CustomerMSISDN', '000000000001')
     api_context.add_parameter('input_ServiceProviderCode', '000000')
-    api_context.add_parameter('input_ThirdPartyConversationID', 'asv02e5958774f7ba228d83d0d689632')
+    api_context.add_parameter('input_ThirdPartyConversationID', 'asv02e5958774f7ba228d83d0d689909')
     api_context.add_parameter('input_TransactionReference', 'T1234T')
     api_context.add_parameter('input_PurchasedItemsDesc', 'Shoes')
 
