@@ -24,7 +24,7 @@ def api_all():
     if 'id' in request.args:
         id = int(request.args['id'])
         vvalue = id+0.3
-print(vvalue)
+        print(vvalue)
     else:
         return "Error: No id field provided. Please specify an id."
 
