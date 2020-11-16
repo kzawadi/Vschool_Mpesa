@@ -8,6 +8,7 @@ from requests.auth import HTTPBasicAuth
 import base64
 import json
 from waitress import serve
+import uuid
 
 
 
@@ -25,12 +26,18 @@ def api_all():
         id = int(request.args['id'])
         vvalue = id+0.3
         print(vvalue)
+        # print("\n")
+        print (" input_ThirdPartyConversationID which is a hex Representation : ",end="") 
+        zwd = uuid.uuid4()
+        print (zwd.hex)
+
+    
     else:
         return "Error: No id field provided. Please specify an id."
 
 
 
-    return jsonify(vvalue)
+    return jsonify(vvalue,zwd)
 
 
 
@@ -83,6 +90,14 @@ def main():
     print(result.body)
 
 # The above call issued a sessionID which will be used as the API key in calls that needs the sessionID
+    
+    print (" input_ThirdPartyConversationID which is a hex Representation : ",end="") 
+    id = uuid.uuid4()
+    conversationID = id.hex
+    print (conversationID)
+
+    print("\n")
+
     api_context = APIContext()
     api_context.api_key = result.body['output_SessionID']
     api_context.public_key = public_key
@@ -99,7 +114,7 @@ def main():
     api_context.add_parameter('input_Currency', 'TZS')
     api_context.add_parameter('input_CustomerMSISDN', '000000000001')
     api_context.add_parameter('input_ServiceProviderCode', '000000')
-    api_context.add_parameter('input_ThirdPartyConversationID', 'asv02e5958774f7ba228d83d0d689909')
+    api_context.add_parameter('input_ThirdPartyConversationID',conversationID)
     api_context.add_parameter('input_TransactionReference', 'T1234T')
     api_context.add_parameter('input_PurchasedItemsDesc', 'Shoes')
 
