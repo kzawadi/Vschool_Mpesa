@@ -98,6 +98,11 @@ def main():
 
     print("\n")
 
+    input_CustomerMSISDN = str(request.args['msisdn'])
+
+    # input_CustomerMSISDN = '255756882578'
+    print('Customer mobile number  '+ input_CustomerMSISDN)
+
     api_context = APIContext()
     api_context.api_key = result.body['output_SessionID']
     api_context.public_key = public_key
@@ -112,7 +117,7 @@ def main():
     api_context.add_parameter('input_Amount', '100')
     api_context.add_parameter('input_Country', 'TZN')
     api_context.add_parameter('input_Currency', 'TZS')
-    api_context.add_parameter('input_CustomerMSISDN', '000000000001')
+    api_context.add_parameter('input_CustomerMSISDN', input_CustomerMSISDN)
     api_context.add_parameter('input_ServiceProviderCode', '000000')
     api_context.add_parameter('input_ThirdPartyConversationID',conversationID)
     api_context.add_parameter('input_TransactionReference', 'T1234T')
