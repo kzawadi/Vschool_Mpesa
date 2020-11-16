@@ -99,9 +99,12 @@ def main():
     print("\n")
 
     input_CustomerMSISDN = str(request.args['msisdn'])
+    input_Amount = str(request.args['amnt'])
+
 
     # input_CustomerMSISDN = '255756882578'
-    print('Customer mobile number  '+ input_CustomerMSISDN)
+    print('Customer mobile number  '+ input_CustomerMSISDN )
+    print('The amount to be deducted '+ input_Amount)
 
     api_context = APIContext()
     api_context.api_key = result.body['output_SessionID']
@@ -114,7 +117,7 @@ def main():
 
     api_context.add_header('Origin','3.8.36.235' )
 
-    api_context.add_parameter('input_Amount', '100')
+    api_context.add_parameter('input_Amount', input_Amount)
     api_context.add_parameter('input_Country', 'TZN')
     api_context.add_parameter('input_Currency', 'TZS')
     api_context.add_parameter('input_CustomerMSISDN', input_CustomerMSISDN)
