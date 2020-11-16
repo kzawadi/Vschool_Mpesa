@@ -58,7 +58,7 @@ def main():
     api_context.path = '/sandbox/ipg/v2/vodacomTZN/getSession/'
 
 # Add/update headers
-    api_context.add_header('Origin', '18.133.228.67')
+    api_context.add_header('Origin', '3.8.36.235')
 
 # Parameters can be added to the call as well that on POST will be in JSON format and on GET will be URL parameters
 # api_context.add_parameter('key', 'value')
@@ -91,7 +91,7 @@ def main():
     api_context.port = 443
     api_context.path = '/sandbox/ipg/v2/vodacomTZN/c2bPayment/singleStage/'
 
-    api_context.add_header('Origin','18.133.228.67' )
+    api_context.add_header('Origin','3.8.36.235' )
 
     api_context.add_parameter('input_Amount', '100')
     api_context.add_parameter('input_Country', 'TZN')
