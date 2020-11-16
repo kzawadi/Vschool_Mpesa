@@ -100,11 +100,13 @@ def main():
 
     input_CustomerMSISDN = str(request.args['msisdn'])
     input_Amount = str(request.args['amnt'])
+    input_PurchasedItemsDesc = str(request.args['itemDesc'])
 
 
     # input_CustomerMSISDN = '255756882578'
     print('Customer mobile number  '+ input_CustomerMSISDN )
     print('The amount to be deducted '+ input_Amount)
+    print('payment for '+input_PurchasedItemsDesc)
 
     api_context = APIContext()
     api_context.api_key = result.body['output_SessionID']
@@ -124,7 +126,7 @@ def main():
     api_context.add_parameter('input_ServiceProviderCode', '000000')
     api_context.add_parameter('input_ThirdPartyConversationID',conversationID)
     api_context.add_parameter('input_TransactionReference', 'T1234T')
-    api_context.add_parameter('input_PurchasedItemsDesc', 'Shoes')
+    api_context.add_parameter('input_PurchasedItemsDesc', input_PurchasedItemsDesc)
 
     api_request = APIRequest(api_context)
 
