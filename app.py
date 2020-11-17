@@ -9,8 +9,12 @@ import base64
 import json
 from waitress import serve
 import uuid
+import firebase_admin
+from firebase_admin import credentials
 
 
+cred = credentials.Certificate("./academic-4e032-firebase-adminsdk-76ef0-805166a206")
+firebase_admin.initialize_app(cred)
 
 # initialize a flask app
 app = Flask(__name__)
@@ -145,7 +149,10 @@ def main():
 
     print(result.status_code)
     # print(result.headers)
-    print(result.body)    
+    print(result.body)   
+    # todo This carries tru or false creation ..refer to pesa api for the code from response
+    rslt = result.body["output_ResponseCode"]
+    print('The response code from Mpesa........'+rslt+'.........')
     return jsonify(result.body,result.status_code)
 # if __name__ == '__main__':
     # main()

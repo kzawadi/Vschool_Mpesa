@@ -6,4 +6,5 @@ requests==2.18.4
 urllib3==1.22
 Flask==1.0.2
 Flask-RESTful==0.3.8
-waitress
+waitress==1.4.4
+firebase-admin==4.4.0
