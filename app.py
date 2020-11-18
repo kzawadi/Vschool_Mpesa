@@ -1,3 +1,6 @@
+# pylint: disable=no-name-in-module
+# pylint: disable=no-self-argument
+
 from portalsdk import APIContext, APIMethodType, APIRequest
 from time import sleep
 from flask import Flask , jsonify , request
@@ -11,14 +14,24 @@ from waitress import serve
 import uuid
 import firebase_admin
 from firebase_admin import credentials
+from firebase_admin import initialize_app
+from firebase_admin import firestore 
+
+from datetime import datetime
+from pydantic import BaseModel
+from flask_pydantic import validate
+from typing import List, Optional
 
 
-cred = credentials.Certificate("./academic-4e032-firebase-adminsdk-76ef0-805166a206")
-firebase_admin.initialize_app(cred)
+
+cred = credentials.Certificate("./academic-4e032-firebase-adminsdk-76ef0-805166a206.json")
+initialize_app(cred)
+# fireabase database paths
+firestoreDb = firestore.client()
+subscriptions_ref = firestoreDb.collection('subscriptions')
 
 # initialize a flask app
 app = Flask(__name__)
-
 # intialize a flask-restful api
 api = Api(app)
 
@@ -38,18 +51,34 @@ def api_all():
     
     else:
         return "Error: No id field provided. Please specify an id."
-
-
-
     return jsonify(vvalue,zwd)
 
+class BodyModel(BaseModel):
+    msisdn:str
+    amount:str
+    itemDesc:str
+    UserId:str
 
+class ResponseModel(BaseModel):
+    responseCode:str
+    output_ResponseDesc:str
 
-
-
+class FirestoreData(BaseModel):
+    output_ConversationID:str
+    output_ResponseCode:str
+    output_ResponseDesc:str
+    output_ThirdPartyConversationID:str
+    output_TransactionID:str
+    UserId:str
+    msisdn:int
+    itemDesc:str
+    amount:int
+    # created:Optional[str]
+    # endDate:Optional[str]
 
 @app.route('/api/v1/vschool/subscription', methods=['POST'])
-def main():
+@validate( on_success_status=201)
+def main(body: BodyModel):
 # Public key on the API listener used to encrypt keys
     public_key = 'MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEArv9yxA69XQKBo24BaF/D+fvlqmGdYjqLQ5WtNBb5tquqGvAvG3WMFETVUSow/LizQalxj2ElMVrUmzu5mGGkxK08bWEXF7a1DEvtVJs6nppIlFJc2SnrU14AOrIrB28ogm58JjAl5BOQawOXD5dfSk7MaAA82pVHoIqEu0FxA8BOKU+RGTihRU+ptw1j4bsAJYiPbSX6i71gfPvwHPYamM0bfI4CmlsUUR3KvCG24rB6FNPcRBhM3jDuv8ae2kC33w9hEq8qNB55uw51vK7hyXoAa+U7IqP1y6nBdlN25gkxEA8yrsl1678cspeXr+3ciRyqoRgj9RD/ONbJhhxFvt1cLBh+qwK2eqISfBb06eRnNeC71oBokDm3zyCnkOtMDGl7IvnMfZfEPFCfg5QgJVk1msPpRvQxmEsrX9MQRyFVzgy2CWNIb7c+jPapyrNwoUbANlN8adU1m6yOuoX7F49x+OjiG2se0EJ6nafeKUXw/+hiJZvELUYgzKUtMAZVTNZfT8jjb58j8GVtuS+6TM2AutbejaCV84ZK58E2CRJqhmjQibEUO6KPdD7oTlEkFy52Y1uOOBXgYpqMzufNPmfdqqqSM4dU70PO8ogyKGiLAIxCetMjjm6FCMEA3Kc8K0Ig7/XtFm9By6VxTJK1Mg36TlHaZKP6VzVLXMtesJECAwEAAQ=='
 # Create Context with API to request a Session ID
@@ -102,9 +131,9 @@ def main():
 
     print("\n")
 
-    input_CustomerMSISDN = str(request.args['msisdn'])
-    input_Amount = str(request.args['amnt'])
-    input_PurchasedItemsDesc = str(request.args['itemDesc'])
+    input_CustomerMSISDN = body.msisdn
+    input_Amount = body.amount
+    input_PurchasedItemsDesc = body.itemDesc
 
 
     # input_CustomerMSISDN = '255756882578'
@@ -147,6 +176,30 @@ def main():
     if result is None:
         raise Exception('API call failed to get result. Please check.')
 
+
+    try:
+        userDataz = FirestoreData(
+                output_ConversationID=result.body["output_ConversationID"],
+                output_ResponseCode=result.body["output_ResponseCode"],
+                output_ResponseDesc=result.body["output_ResponseDesc"],
+                output_ThirdPartyConversationID=result.body["output_ThirdPartyConversationID"],
+                output_TransactionID=result.body["output_TransactionID"],
+                UserId=body.UserId,
+                msisdn=body.msisdn,
+                itemDesc=body.itemDesc,
+                amount=body.amount,
+                # created:Optional[str]
+                # endDate:Optional[str]
+        )
+    
+        print(userDataz.dict())
+        
+        subscriptions_ref.document(conversationID).set(userDataz.dict())
+    except Exception as e:
+        print(str(e))
+        return f"An Error Occured: " +str(e)
+    
+
     print(result.status_code)
     # print(result.headers)
     print(result.body)   
@@ -154,8 +207,3 @@ def main():
     rslt = result.body["output_ResponseCode"]
     print('The response code from Mpesa........'+rslt+'.........')
     return jsonify(result.body,result.status_code)
-# if __name__ == '__main__':
-    # main()
-    # app.run(port=5000,debug=True)
-    # serve(app)
-    # serve(app, host='0.0.0.0', port=8080)
