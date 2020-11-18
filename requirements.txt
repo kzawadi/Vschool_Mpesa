@@ -4,7 +4,10 @@ idna==2.6
 pycryptodome==3.6
 requests==2.18.4
 urllib3==1.22
-Flask==1.0.2
+Flask==1.1.2
 Flask-RESTful==0.3.8
 waitress==1.4.4
 firebase-admin==4.4.0
+pydantic==1.7.2
+typing==3.7.4.3
+Flask-Pydantic==0.4.0
