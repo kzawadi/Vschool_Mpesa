@@ -58,6 +58,8 @@ class BodyModel(BaseModel):
     itemDesc:str
     UserId:str
     type_of_subscription:str
+    school:str
+    userName:str
 
 class ResponseModel(BaseModel):
     responseCode:str
@@ -182,7 +184,6 @@ def main(body: BodyModel):
             dt:datetime.datetime=datetime.datetime.utcnow() + datetime.timedelta(days=365)
         else:
             dt:datetime.datetime=datetime.datetime.utcnow()+datetime.timedelta(days=30)
-            # t = datetime.utcnow() + datetime.timedelta(days=30)
         st = dt.strftime('%Y-%m-%d %H:%M:%S')
         print("The sub will Exipire on  -- " +st+" -----")
         userDataz = FirestoreData(
