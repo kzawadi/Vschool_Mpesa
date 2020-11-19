@@ -70,7 +70,7 @@ class FirestoreData(BaseModel):
     output_ThirdPartyConversationID:str
     output_TransactionID:str
     UserId:str
-    msisdn:int
+    msisdn:str
     itemDesc:str
     amount:int
     created:datetime = datetime.utcnow()
@@ -197,6 +197,11 @@ def main(body: BodyModel):
     except Exception as e:
         print(str(e))
         return f"An Error Occured: " +str(e)
+
+    appResponse = ResponseModel(
+        responseCode = result.body["output_ResponseCode"],
+        output_ResponseDesc=result.body["output_ResponseDesc"],
+    )
     
 
     print(result.status_code)
@@ -205,4 +210,4 @@ def main(body: BodyModel):
     # todo This carries tru or false creation ..refer to pesa api for the code from response
     rslt = result.body["output_ResponseCode"]
     print('The response code from Mpesa........'+rslt+'.........')
-    return jsonify(result.body,result.status_code)
+    return jsonify(appResponse.dict(),result.status_code)
