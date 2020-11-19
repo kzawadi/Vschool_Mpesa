@@ -65,7 +65,7 @@ class ResponseModel(BaseModel):
     responseCode:str
     output_ResponseDesc:str
 
-class FirestoreData(BaseModel):
+class FirestoreDataYearly(BaseModel):
     output_ConversationID:str
     output_ResponseCode:str
     output_ResponseDesc:str
@@ -78,8 +78,30 @@ class FirestoreData(BaseModel):
     type_of_subscription:str
     school:str
     userName:str
-    created:datetime.datetime = datetime.datetime.utcnow()
-    endDate:datetime.datetime
+    created:datetime.datetime
+
+    def __init__(self,**kwargs ):
+        super().__init__(**kwargs)
+        object.__setattr__(self, 'endDate', datetime.datetime.utcnow()+datetime.timedelta(days=365))
+
+class FirestoreDataMonthly(BaseModel):
+    output_ConversationID:str
+    output_ResponseCode:str
+    output_ResponseDesc:str
+    output_ThirdPartyConversationID:str
+    output_TransactionID:str
+    UserId:str
+    msisdn:str
+    itemDesc:str
+    amount:int
+    type_of_subscription:str
+    school:str
+    userName:str
+    created:datetime.datetime
+
+    def __init__(self,**kwargs ):
+        super().__init__(**kwargs)
+        object.__setattr__(self, 'endDate', datetime.datetime.utcnow()+datetime.timedelta(days=30))
 
 @app.route('/api/v1/vschool/subscription', methods=['POST'])
 @validate( on_success_status=201)
@@ -183,14 +205,9 @@ def main(body: BodyModel):
 
 
     try:
-        if body.type_of_subscription =="YEARLY":
-            dt:datetime.datetime=datetime.datetime.utcnow() + datetime.timedelta(days=365)
-        else:
-            dt:datetime.datetime=datetime.datetime.utcnow()+datetime.timedelta(days=30)
-        st = dt.strftime('%Y-%m-%d %H:%M:%S')
-        print("The sub will Exipire on  -- " +st+" -----")
-        if result.body["output_ResponseCode"] == "INS-0":
-            userDataz = FirestoreData(
+
+        if body.type_of_subscription =="YEARLY" and result.body["output_ResponseCode"] == "INS-0": 
+            userDataz = FirestoreDataYearly(
                     output_ConversationID=result.body["output_ConversationID"],
                     output_ResponseCode=result.body["output_ResponseCode"],
                     output_ResponseDesc=result.body["output_ResponseDesc"],
@@ -203,12 +220,29 @@ def main(body: BodyModel):
                     school=body.school,
                     userName=body.userName,
                     amount=body.amount,
-                    endDate=dt
-            )
-            
+                    created = datetime.datetime.utcnow()
+            )           
             print(userDataz.dict())
-            
             subscriptions_ref.document(conversationID).set(userDataz.dict())
+        elif body.type_of_subscription =="MONTHLY" and result.body["output_ResponseCode"] == "INS-0": 
+            userDataz2 = FirestoreDataMonthly(
+                    output_ConversationID=result.body["output_ConversationID"],
+                    output_ResponseCode=result.body["output_ResponseCode"],
+                    output_ResponseDesc=result.body["output_ResponseDesc"],
+                    output_ThirdPartyConversationID=result.body["output_ThirdPartyConversationID"],
+                    output_TransactionID=result.body["output_TransactionID"],
+                    UserId=body.UserId,
+                    msisdn=body.msisdn,
+                    itemDesc=body.itemDesc,
+                    type_of_subscription=body.type_of_subscription,
+                    school=body.school,
+                    userName=body.userName,
+                    amount=body.amount,
+                    created = datetime.datetime.utcnow()
+            )
+            print(userDataz2.dict())
+            subscriptions_ref.document(conversationID).set(userDataz2.dict())
+
     except Exception as e:
         print(str(e))
         return f"An Error Occured: " +str(e)
