@@ -73,7 +73,7 @@ class FirestoreData(BaseModel):
     msisdn:int
     itemDesc:str
     amount:int
-    # created:Optional[str]
+    created:datetime = datetime.utcnow()
     # endDate:Optional[str]
 
 @app.route('/api/v1/vschool/subscription', methods=['POST'])
@@ -188,7 +188,6 @@ def main(body: BodyModel):
                 msisdn=body.msisdn,
                 itemDesc=body.itemDesc,
                 amount=body.amount,
-                # created:Optional[str]
                 # endDate:Optional[str]
         )
     
