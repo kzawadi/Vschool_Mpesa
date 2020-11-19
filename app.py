@@ -75,6 +75,9 @@ class FirestoreData(BaseModel):
     msisdn:str
     itemDesc:str
     amount:int
+    type_of_subscription:str
+    school:str
+    userName:str
     created:datetime.datetime = datetime.datetime.utcnow()
     endDate:datetime.datetime
 
@@ -195,6 +198,9 @@ def main(body: BodyModel):
                 UserId=body.UserId,
                 msisdn=body.msisdn,
                 itemDesc=body.itemDesc,
+                type_of_subscription=body.type_of_subscription,
+                school=body.school,
+                userName=body.userName,
                 amount=body.amount,
                 endDate=dt
         )
