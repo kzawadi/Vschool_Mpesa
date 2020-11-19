@@ -5,7 +5,6 @@ from portalsdk import APIContext, APIMethodType, APIRequest
 from time import sleep
 from flask import Flask , jsonify , request
 from flask_restful import Api, Resource, reqparse
-import datetime
 import requests
 from requests.auth import HTTPBasicAuth
 import base64
@@ -17,7 +16,7 @@ from firebase_admin import credentials
 from firebase_admin import initialize_app
 from firebase_admin import firestore 
 
-from datetime import datetime
+import datetime
 from pydantic import BaseModel
 from flask_pydantic import validate
 from typing import List, Optional
@@ -58,6 +57,7 @@ class BodyModel(BaseModel):
     amount:str
     itemDesc:str
     UserId:str
+    type_of_subscription:str
 
 class ResponseModel(BaseModel):
     responseCode:str
@@ -73,8 +73,8 @@ class FirestoreData(BaseModel):
     msisdn:str
     itemDesc:str
     amount:int
-    created:datetime = datetime.utcnow()
-    # endDate:Optional[str]
+    created:datetime.datetime = datetime.datetime.utcnow()
+    endDate:datetime.datetime
 
 @app.route('/api/v1/vschool/subscription', methods=['POST'])
 @validate( on_success_status=201)
@@ -178,6 +178,13 @@ def main(body: BodyModel):
 
 
     try:
+        if body.type_of_subscription =="YEARLY":
+            dt:datetime.datetime=datetime.datetime.utcnow() + datetime.timedelta(days=365)
+        else:
+            dt:datetime.datetime=datetime.datetime.utcnow()+datetime.timedelta(days=30)
+            # t = datetime.utcnow() + datetime.timedelta(days=30)
+        st = dt.strftime('%Y-%m-%d %H:%M:%S')
+        print("The sub will Exipire on  -- " +st+" -----")
         userDataz = FirestoreData(
                 output_ConversationID=result.body["output_ConversationID"],
                 output_ResponseCode=result.body["output_ResponseCode"],
@@ -188,7 +195,7 @@ def main(body: BodyModel):
                 msisdn=body.msisdn,
                 itemDesc=body.itemDesc,
                 amount=body.amount,
-                # endDate:Optional[str]
+                endDate=dt
         )
     
         print(userDataz.dict())
