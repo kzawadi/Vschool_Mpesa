@@ -189,25 +189,26 @@ def main(body: BodyModel):
             dt:datetime.datetime=datetime.datetime.utcnow()+datetime.timedelta(days=30)
         st = dt.strftime('%Y-%m-%d %H:%M:%S')
         print("The sub will Exipire on  -- " +st+" -----")
-        userDataz = FirestoreData(
-                output_ConversationID=result.body["output_ConversationID"],
-                output_ResponseCode=result.body["output_ResponseCode"],
-                output_ResponseDesc=result.body["output_ResponseDesc"],
-                output_ThirdPartyConversationID=result.body["output_ThirdPartyConversationID"],
-                output_TransactionID=result.body["output_TransactionID"],
-                UserId=body.UserId,
-                msisdn=body.msisdn,
-                itemDesc=body.itemDesc,
-                type_of_subscription=body.type_of_subscription,
-                school=body.school,
-                userName=body.userName,
-                amount=body.amount,
-                endDate=dt
-        )
-    
-        print(userDataz.dict())
-        
-        subscriptions_ref.document(conversationID).set(userDataz.dict())
+        if result.body["output_ResponseCode"] == "INS-0":
+            userDataz = FirestoreData(
+                    output_ConversationID=result.body["output_ConversationID"],
+                    output_ResponseCode=result.body["output_ResponseCode"],
+                    output_ResponseDesc=result.body["output_ResponseDesc"],
+                    output_ThirdPartyConversationID=result.body["output_ThirdPartyConversationID"],
+                    output_TransactionID=result.body["output_TransactionID"],
+                    UserId=body.UserId,
+                    msisdn=body.msisdn,
+                    itemDesc=body.itemDesc,
+                    type_of_subscription=body.type_of_subscription,
+                    school=body.school,
+                    userName=body.userName,
+                    amount=body.amount,
+                    endDate=dt
+            )
+            
+            print(userDataz.dict())
+            
+            subscriptions_ref.document(conversationID).set(userDataz.dict())
     except Exception as e:
         print(str(e))
         return f"An Error Occured: " +str(e)
@@ -221,7 +222,7 @@ def main(body: BodyModel):
     print(result.status_code)
     # print(result.headers)
     print(result.body)   
-    # todo This carries tru or false creation ..refer to pesa api for the code from response
+    # This carries tru or false creation ..refer to pesa api for the code from response
     rslt = result.body["output_ResponseCode"]
     print('The response code from Mpesa........'+rslt+'.........')
     return jsonify(appResponse.dict(),result.status_code)
