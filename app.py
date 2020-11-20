@@ -56,8 +56,8 @@ class BodyModel(BaseModel):
     msisdn:str
     amount:str
     itemDesc:str
-    UserId:str
-    type_of_subscription:str
+    userId:str
+    typeOfSubscription:str
     school:str
     userName:str
 
@@ -71,11 +71,11 @@ class FirestoreDataYearly(BaseModel):
     output_ResponseDesc:str
     output_ThirdPartyConversationID:str
     output_TransactionID:str
-    UserId:str
+    userId:str
     msisdn:str
     itemDesc:str
     amount:int
-    type_of_subscription:str
+    typeOfSubscription:str
     school:str
     userName:str
     created:datetime.datetime
@@ -90,11 +90,11 @@ class FirestoreDataMonthly(BaseModel):
     output_ResponseDesc:str
     output_ThirdPartyConversationID:str
     output_TransactionID:str
-    UserId:str
+    userId:str
     msisdn:str
     itemDesc:str
     amount:int
-    type_of_subscription:str
+    typeOfSubscription:str
     school:str
     userName:str
     created:datetime.datetime
@@ -206,17 +206,17 @@ def main(body: BodyModel):
 
     try:
 
-        if body.type_of_subscription =="YEARLY" and result.body["output_ResponseCode"] == "INS-0": 
+        if body.typeOfSubscription =="YEARLY" and result.body["output_ResponseCode"] == "INS-0": 
             userDataz = FirestoreDataYearly(
                     output_ConversationID=result.body["output_ConversationID"],
                     output_ResponseCode=result.body["output_ResponseCode"],
                     output_ResponseDesc=result.body["output_ResponseDesc"],
                     output_ThirdPartyConversationID=result.body["output_ThirdPartyConversationID"],
                     output_TransactionID=result.body["output_TransactionID"],
-                    UserId=body.UserId,
+                    userId=body.userId,
                     msisdn=body.msisdn,
                     itemDesc=body.itemDesc,
-                    type_of_subscription=body.type_of_subscription,
+                    typeOfSubscription=body.typeOfSubscription,
                     school=body.school,
                     userName=body.userName,
                     amount=body.amount,
@@ -224,17 +224,17 @@ def main(body: BodyModel):
             )           
             print(userDataz.dict())
             subscriptions_ref.document(conversationID).set(userDataz.dict())
-        elif body.type_of_subscription =="MONTHLY" and result.body["output_ResponseCode"] == "INS-0": 
+        elif body.typeOfSubscription =="MONTHLY" and result.body["output_ResponseCode"] == "INS-0": 
             userDataz2 = FirestoreDataMonthly(
                     output_ConversationID=result.body["output_ConversationID"],
                     output_ResponseCode=result.body["output_ResponseCode"],
                     output_ResponseDesc=result.body["output_ResponseDesc"],
                     output_ThirdPartyConversationID=result.body["output_ThirdPartyConversationID"],
                     output_TransactionID=result.body["output_TransactionID"],
-                    UserId=body.UserId,
+                    userId=body.userId,
                     msisdn=body.msisdn,
                     itemDesc=body.itemDesc,
-                    type_of_subscription=body.type_of_subscription,
+                    typeOfSubscription=body.typeOfSubscription,
                     school=body.school,
                     userName=body.userName,
                     amount=body.amount,
