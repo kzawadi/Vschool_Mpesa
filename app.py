@@ -3,39 +3,25 @@
 
 from portalsdk import APIContext, APIMethodType, APIRequest
 from time import sleep
-from flask import Flask, jsonify, request, g
-# from flask_restful import Api, Resource, reqparse
-import requests
-from requests.auth import HTTPBasicAuth
-import base64
-import json
-from waitress import serve
+from flask import Flask, jsonify, g
 import uuid
-import firebase_admin
 from firebase_admin import credentials
 from firebase_admin import initialize_app
 from firebase_admin import firestore
-
 import datetime
 from pydantic import BaseModel
 from flask_pydantic import validate
-from typing import List, Optional
 
 
 cred = credentials.Certificate("./key.json")
 initialize_app(cred)
-# fireabase database paths
+# firebase database paths
 firestoreDb = firestore.client()
 subscriptions_ref = firestoreDb.collection('subscriptions')
 
 
 # initialize a flask app
 app = Flask(__name__)
-# intialize a flask-restful api
-# api = Api(app)
-
-# app_context.push()
-# app_context = app.app_context()
 
 
 class BodyModel(BaseModel):
@@ -114,7 +100,9 @@ class WriteOnceReadWhenever:
 def main(body: BodyModel):
 
     # Public key on the API listener used to encrypt keys
-    public_key = 'MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEArv9yxA69XQKBo24BaF/D+fvlqmGdYjqLQ5WtNBb5tquqGvAvG3WMFETVUSow/LizQalxj2ElMVrUmzu5mGGkxK08bWEXF7a1DEvtVJs6nppIlFJc2SnrU14AOrIrB28ogm58JjAl5BOQawOXD5dfSk7MaAA82pVHoIqEu0FxA8BOKU+RGTihRU+ptw1j4bsAJYiPbSX6i71gfPvwHPYamM0bfI4CmlsUUR3KvCG24rB6FNPcRBhM3jDuv8ae2kC33w9hEq8qNB55uw51vK7hyXoAa+U7IqP1y6nBdlN25gkxEA8yrsl1678cspeXr+3ciRyqoRgj9RD/ONbJhhxFvt1cLBh+qwK2eqISfBb06eRnNeC71oBokDm3zyCnkOtMDGl7IvnMfZfEPFCfg5QgJVk1msPpRvQxmEsrX9MQRyFVzgy2CWNIb7c+jPapyrNwoUbANlN8adU1m6yOuoX7F49x+OjiG2se0EJ6nafeKUXw/+hiJZvELUYgzKUtMAZVTNZfT8jjb58j8GVtuS+6TM2AutbejaCV84ZK58E2CRJqhmjQibEUO6KPdD7oTlEkFy52Y1uOOBXgYpqMzufNPmfdqqqSM4dU70PO8ogyKGiLAIxCetMjjm6FCMEA3Kc8K0Ig7/XtFm9By6VxTJK1Mg36TlHaZKP6VzVLXMtesJECAwEAAQ=='
+    public_key = 'MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEArv9yxA69XQKBo24BaF/D' \
+                 '+fvlqmGdYjqLQ5WtNBb5tquqGvAvG3WMFETVUSow' \
+                 '/LizQalxj2ElMVrUmzu5mGGkxK08bWEXF7a1DEvtVJs6nppIlFJc2SnrU14AOrIrB28ogm58JjAl5BOQawOXD5dfSk7MaAA82pVHoIqEu0FxA8BOKU+RGTihRU+ptw1j4bsAJYiPbSX6i71gfPvwHPYamM0bfI4CmlsUUR3KvCG24rB6FNPcRBhM3jDuv8ae2kC33w9hEq8qNB55uw51vK7hyXoAa+U7IqP1y6nBdlN25gkxEA8yrsl1678cspeXr+3ciRyqoRgj9RD/ONbJhhxFvt1cLBh+qwK2eqISfBb06eRnNeC71oBokDm3zyCnkOtMDGl7IvnMfZfEPFCfg5QgJVk1msPpRvQxmEsrX9MQRyFVzgy2CWNIb7c+jPapyrNwoUbANlN8adU1m6yOuoX7F49x+OjiG2se0EJ6nafeKUXw/+hiJZvELUYgzKUtMAZVTNZfT8jjb58j8GVtuS+6TM2AutbejaCV84ZK58E2CRJqhmjQibEUO6KPdD7oTlEkFy52Y1uOOBXgYpqMzufNPmfdqqqSM4dU70PO8ogyKGiLAIxCetMjjm6FCMEA3Kc8K0Ig7/XtFm9By6VxTJK1Mg36TlHaZKP6VzVLXMtesJECAwEAAQ== '
 # Create Context with API to request a Session ID
     api_context = APIContext()
 # Api key
