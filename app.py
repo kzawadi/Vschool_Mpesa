@@ -99,18 +99,14 @@ class FirestoreDataMonthly(BaseModel):
 
 
 class WriteOnceReadWhenever:
-    def __init__(self, **kwargs):
-        if hasattr(self, 'ik'):
-            raise Exception("Attempting to alter read-only value")
-        super().__init__(**kwargs)
-        object.__setattr__(self, 'ik', uuid.uuid4().hex)
+    # ik: str
 
+    def __init__(self, ik=None):
+        self.ik = ik
 
-def uid():
-    x = WriteOnceReadWhenever()
-    z = getattr(x, "ik")
-    g.iids = z
-    return g.iids
+    def uid(self):
+        self.ik = uuid.uuid4().hex
+        return self.ik
 
 
 @app.route('/api/v1/vschool/subscription', methods=['POST'])
@@ -150,7 +146,7 @@ def main(body: BodyModel):
     try:
         result = api_request.execute()
     except Exception as e:
-        print('Call Failed: ' + e)
+        print('Call Failed: ' + str(e))
 
     if result is None:
         raise Exception('SessionKey call failed to get result. Please check.')
@@ -162,10 +158,11 @@ def main(body: BodyModel):
 
     # The above call issued a sessionID which will be used as the API key in calls that needs the sessionID
 
-    uID = uid()
+    # x = WriteOnceReadWhenever()
+    g.uID = WriteOnceReadWhenever().uid()
 
     print("\n")
-    print(" input_ThirdPartyConversationID Representation : "+uID)
+    print(" input_ThirdPartyConversationID Representation : "+g.uID)
     print("\n")
 
     input_CustomerMSISDN = body.msisdn
@@ -193,7 +190,7 @@ def main(body: BodyModel):
     api_context.add_parameter('input_Currency', 'TZS')
     api_context.add_parameter('input_CustomerMSISDN', input_CustomerMSISDN)
     api_context.add_parameter('input_ServiceProviderCode', '000000')
-    api_context.add_parameter('input_ThirdPartyConversationID', uID)
+    api_context.add_parameter('input_ThirdPartyConversationID', g.uID)
     api_context.add_parameter('input_TransactionReference', 'T1234T')
     api_context.add_parameter(
         'input_PurchasedItemsDesc', input_PurchasedItemsDesc)
@@ -208,7 +205,7 @@ def main(body: BodyModel):
     try:
         result = api_request.execute()
     except Exception as e:
-        print('Call Failed: ' + e)
+        print('Call Failed: ' + str(e))
 
     if result is None:
         raise Exception('API call failed to get result. Please check.')
@@ -232,7 +229,7 @@ def main(body: BodyModel):
                 created=datetime.datetime.utcnow()
             )
 
-            subscriptions_ref.document(uID).set(userDataz.dict())
+            subscriptions_ref.document(g.uID).set(userDataz.dict())
         elif body.typeOfSubscription == "MONTHLY" and result.body["output_ResponseCode"] == "INS-0":
             userDataz2 = FirestoreDataMonthly(
                 output_ConversationID=result.body["output_ConversationID"],
@@ -250,7 +247,7 @@ def main(body: BodyModel):
                 created=datetime.datetime.utcnow()
             )
             print(userDataz2.dict())
-            subscriptions_ref.document(uID).set(userDataz2.dict())
+            subscriptions_ref.document(g.uID).set(userDataz2.dict())
 
     except Exception as e:
         print(str(e))
