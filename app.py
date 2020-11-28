@@ -259,7 +259,7 @@ class Silver(Resource):
         # This carries tru or false creation ..refer to pesa api for the code from response
         rslt = result.body["output_ResponseCode"]
         print('The response code from Mpesa........' + rslt + '.........')
-        return jsonify(appResponse.dict(), result.status_code, un)
+        return jsonify(appResponse.dict())
 
 
 api.add_resource(Silver, '/silver', )
